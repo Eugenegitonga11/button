@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vivace — Step Inside Section</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   VIVACE — "STEP INSIDE" GALLERY SECTION
+   Drop-in section. Everything is scoped under .vv-gallery
+   so it won't collide with the rest of the homepage styles.
+   ============================================================ */
+
+:root{
+  --vv-cream:      #FAF6EF;
+  --vv-sand:       #EADFCF;
+  --vv-terracotta: #C4714B;
+  --vv-espresso:   #2E2420;   /* dark panel */
+  --vv-espresso-2: #3A2E28;
+  --vv-gold:       #C9A227;
+  --vv-gold-soft:  #E3C56B;
+  --vv-ivory:      #F6EFE4;   /* text on dark */
+
+  --vv-display: 'Playfair Display', serif;
+  --vv-body:    'Jost', sans-serif;
+  --vv-accent:  'Cormorant Garamond', serif;
+}
+
+/* --- page scaffold (remove when pasting into homepage) --- */
+*{ margin:0; padding:0; box-sizing:border-box; }
+body{ background:var(--vv-cream); font-family:var(--vv-body); }
+.demo-spacer{ height:12vh; }
+
+/* ============================================================
+   SECTION
+   ============================================================ */
+.vv-gallery{
+  position:relative;
+  padding: clamp(90px, 12vw, 160px) 0;   /* room for images to overflow */
+  overflow-x:clip;
+}
+
+/* Dark panel — full-bleed to the right, inset from the left */
+.vv-gallery__panel{
+  position:relative;
+  margin-left: clamp(0px, 4vw, 64px);
+  background: linear-gradient(115deg, var(--vv-espresso) 0%, var(--vv-espresso-2) 100%);
+  border-radius: 28px 0 0 28px;
+  min-height: 560px;
+  display:flex;
+  align-items:center;
+}
+/* gold accent bar on the panel's left edge */
+.vv-gallery__panel::before{
+  content:"";
+  position:absolute;
+  left:0; top:44px; bottom:44px;
+  width:5px;
+  border-radius: 0 6px 6px 0;
+  background: linear-gradient(180deg, var(--vv-gold-soft), var(--vv-gold), var(--vv-terracotta));
+}
+
+.vv-gallery__inner{
+  width:100%;
+  max-width:1280px;
+  margin-inline:auto;
+  display:grid;
+  grid-template-columns: minmax(0, 46%) minmax(0, 54%);
+  align-items:center;
+  gap: clamp(32px, 4vw, 64px);
+  padding: clamp(56px, 6vw, 88px) clamp(28px, 5vw, 72px);
+}
+
+/* ============================================================
+   LEFT — COPY
+   ============================================================ */
+.vv-gallery__eyebrow{
+  display:inline-flex;
+  align-items:center;
+  gap:12px;
+  font-family:var(--vv-body);
+  font-weight:500;
+  font-size:0.82rem;
+  letter-spacing:0.32em;
+  text-transform:uppercase;
+  color:var(--vv-gold-soft);
+  margin-bottom:26px;
+}
+.vv-gallery__eyebrow::before{
+  content:"";
+  width:9px; height:9px;
+  border-radius:50%;
+  background:var(--vv-gold);
+  box-shadow:0 0 0 4px rgba(201,162,39,0.18);
+}
+
+.vv-gallery__title{
+  font-family:var(--vv-display);
+  font-weight:500;
+  font-size: clamp(2.3rem, 4.2vw, 3.6rem);
+  line-height:1.12;
+  color:var(--vv-ivory);
+  margin-bottom:24px;
+}
+.vv-gallery__title em{
+  font-family:var(--vv-accent);
+  font-style:italic;
+  font-weight:500;
+  color:var(--vv-gold-soft);
+}
+
+.vv-gallery__text{
+  font-family:var(--vv-body);
+  font-weight:300;
+  font-size:1.06rem;
+  line-height:1.75;
+  color:rgba(246,239,228,0.78);
+  max-width:44ch;
+  margin-bottom:38px;
+}
+
+.vv-gallery__cta{
+  display:inline-flex;
+  align-items:center;
+  gap:14px;
+  font-family:var(--vv-body);
+  font-weight:500;
+  font-size:0.92rem;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color:var(--vv-espresso);
+  background:linear-gradient(120deg, var(--vv-gold-soft), var(--vv-gold));
+  padding:18px 34px;
+  border-radius:999px;
+  text-decoration:none;
+  transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s ease;
+  box-shadow:0 10px 26px rgba(201,162,39,0.28);
+}
+.vv-gallery__cta .arrow{ transition:transform .35s cubic-bezier(.2,.8,.2,1); }
+.vv-gallery__cta:hover{
+  transform:translateY(-3px);
+  box-shadow:0 16px 34px rgba(201,162,39,0.4);
+}
+.vv-gallery__cta:hover .arrow{ transform:translateX(5px); }
+.vv-gallery__cta:focus-visible{
+  outline:3px solid var(--vv-gold-soft);
+  outline-offset:3px;
+}
+
+/* ============================================================
+   RIGHT — STAGGERED IMAGE COLLAGE
+   4 tiles on a loose grid; two break past the panel's
+   top & bottom edges, like the reference.
+   ============================================================ */
+.vv-gallery__collage{
+  position:relative;
+  height: clamp(480px, 44vw, 620px);
+}
+
+.vv-tile{
+  position:absolute;
+  border-radius:24px;
+  overflow:hidden;
+  background:var(--vv-sand);
+  box-shadow:0 24px 60px rgba(20,12,8,0.45);
+  transition:transform .45s cubic-bezier(.2,.8,.2,1), box-shadow .45s ease;
+}
+.vv-tile img{
+  width:100%; height:100%;
+  object-fit:cover;
+  display:block;
+  transform:scale(1.02);
+  transition:transform .8s cubic-bezier(.2,.8,.2,1);
+}
+.vv-tile:hover{
+  transform:translateY(-8px);
+  box-shadow:0 34px 70px rgba(20,12,8,0.55);
+  z-index:10;
+}
+.vv-tile:hover img{ transform:scale(1.08); }
+
+/* Category labels — always visible, since they tell the user
+   what part of the gallery each tile represents */
+.vv-tile figcaption{
+  position:absolute;
+  left:0; right:0; bottom:0;
+  padding:30px 18px 13px;
+  font-family:var(--vv-body);
+  font-weight:500;
+  font-size:0.76rem;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  color:var(--vv-ivory);
+  background:linear-gradient(180deg, transparent, rgba(30,22,18,0.82));
+  display:flex;
+  align-items:center;
+  gap:9px;
+}
+.vv-tile figcaption::before{
+  content:"";
+  width:16px; height:2px;
+  background:var(--vv-gold);
+  border-radius:2px;
+  transition:width .35s cubic-bezier(.2,.8,.2,1);
+}
+.vv-tile:hover figcaption::before{ width:28px; }
+
+/* --- tile positions (desktop) --- */
+.vv-tile--1{  /* tall portrait, breaks ABOVE panel top */
+  width:38%;
+  aspect-ratio: 3/4;
+  right:24%;
+  top:-16%;
+  z-index:3;
+}
+.vv-tile--2{  /* small square, mid-left */
+  width:30%;
+  aspect-ratio: 1/1;
+  left:2%;
+  top:22%;
+  z-index:2;
+}
+.vv-tile--3{  /* wide landscape, breaks BELOW panel bottom */
+  width:46%;
+  aspect-ratio: 4/3;
+  left:16%;
+  bottom:-14%;
+  z-index:4;
+}
+.vv-tile--4{  /* medium square, right side */
+  width:34%;
+  aspect-ratio: 1/1;
+  right:-2%;
+  top:44%;
+  z-index:3;
+}
+
+/* ============================================================
+   SCROLL REVEAL
+   ============================================================ */
+.vv-reveal{
+  opacity:0;
+  transform:translateY(28px);
+  transition:opacity .8s ease, transform .8s cubic-bezier(.2,.8,.2,1);
+}
+.vv-reveal.is-visible{
+  opacity:1;
+  transform:translateY(0);
+}
+.vv-reveal[data-delay="1"]{ transition-delay:.12s; }
+.vv-reveal[data-delay="2"]{ transition-delay:.24s; }
+.vv-reveal[data-delay="3"]{ transition-delay:.36s; }
+.vv-reveal[data-delay="4"]{ transition-delay:.48s; }
+
+@media (prefers-reduced-motion: reduce){
+  .vv-reveal{ opacity:1; transform:none; transition:none; }
+  .vv-tile, .vv-tile img, .vv-gallery__cta{ transition:none; }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1024px){
+  .vv-gallery__inner{
+    grid-template-columns:1fr;
+    gap:64px;
+  }
+  .vv-gallery__collage{ height:auto; }
+
+  /* collage becomes a tidy 2-col grid on smaller screens */
+  .vv-gallery__collage{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+  }
+  .vv-tile{
+    position:static;
+    width:100%;
+    aspect-ratio:1/1;
+  }
+  .vv-tile--3{ aspect-ratio:auto; grid-column:1 / -1; height:220px; }
+}
+
+@media (max-width: 640px){
+  .vv-gallery{ padding:64px 0; }
+  .vv-gallery__panel{
+    margin-left:0;
+    border-radius:0;
+  }
+  .vv-gallery__title{ font-size:2rem; }
+  .vv-gallery__cta{ width:100%; justify-content:center; }
+}
+</style>
+</head>
+<body>
+
+<div class="demo-spacer"></div>
+
+<!-- ============================================================
+     VIVACE — STEP INSIDE / GALLERY SECTION
+     To use on the homepage: copy from <section> to </section>,
+     plus the CSS block above and the JS at the bottom.
+     ============================================================ -->
+<section class="vv-gallery" aria-labelledby="vv-gallery-title">
+  <div class="vv-gallery__panel">
+    <div class="vv-gallery__inner">
+
+      <!-- LEFT: copy -->
+      <div class="vv-gallery__copy">
+        <span class="vv-gallery__eyebrow vv-reveal">Moments at Vivace</span>
+
+        <h2 class="vv-gallery__title vv-reveal" data-delay="1" id="vv-gallery-title">
+          The Faces &amp; Moments <em>Behind Vivace</em>
+        </h2>
+
+        <p class="vv-gallery__text vv-reveal" data-delay="2">
+          From our doctors at work to the grand opening of our Nakuru branch
+          and the guests who make every visit special — take a look at life
+          at Vivace, in pictures.
+        </p>
+
+        <a class="vv-gallery__cta vv-reveal" data-delay="3" href="/gallery">
+          View Full Gallery
+          <span class="arrow" aria-hidden="true">&#8594;</span>
+        </a>
+      </div>
+
+      <!-- RIGHT: staggered collage — gallery categories.
+           Swap each src for a real Vivace photo.
+           Recommended crops:
+           tile 1 → portrait 3:4  → OUR DOCTORS (doctor portrait / at work)
+           tile 2 → square        → OUR GUESTS (guest being welcomed / lounge)
+           tile 3 → landscape 4:3 → NAKURU GRAND OPENING (ribbon cutting / crowd)
+           tile 4 → square        → EVENTS & MOMENTS (celebration / team moment) -->
+      <div class="vv-gallery__collage">
+
+        <figure class="vv-tile vv-tile--1 vv-reveal" data-delay="1">
+          <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?q=80&w=800&auto=format&fit=crop"
+               alt="A Vivace doctor at work" loading="lazy">
+          <figcaption>Our Doctors</figcaption>
+        </figure>
+
+        <figure class="vv-tile vv-tile--2 vv-reveal" data-delay="2">
+          <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=800&auto=format&fit=crop"
+               alt="A guest being welcomed at Vivace" loading="lazy">
+          <figcaption>Our Guests</figcaption>
+        </figure>
+
+        <figure class="vv-tile vv-tile--3 vv-reveal" data-delay="3">
+          <img src="https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1000&auto=format&fit=crop"
+               alt="Grand opening celebration of Vivace Nakuru" loading="lazy">
+          <figcaption>Nakuru Grand Opening</figcaption>
+        </figure>
+
+        <figure class="vv-tile vv-tile--4 vv-reveal" data-delay="4">
+          <img src="https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=800&auto=format&fit=crop"
+               alt="A special moment at a Vivace event" loading="lazy">
+          <figcaption>Events &amp; Moments</figcaption>
+        </figure>
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="demo-spacer"></div>
+
+<script>
+/* Scroll reveal — respects prefers-reduced-motion via CSS */
+(function(){
+  const els = document.querySelectorAll('.vv-reveal');
+  if(!('IntersectionObserver' in window)){
+    els.forEach(el => el.classList.add('is-visible'));
+    return;
+  }
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('is-visible');
+        io.unobserve(entry.target);
+      }
+    });
+  },{ threshold:0.15 });
+  els.forEach(el => io.observe(el));
+})();
+</script>
+
+</body>
+</html>
