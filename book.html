@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vivace — CTA Band (Animated)</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,500;1,500;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ===== Vivace design tokens (same as homepage) ===== */
+:root{
+  --cream:      #FAF6EF;
+  --terracotta: #C4714B;
+  --terra-deep: #A85A38;
+  --espresso:   #2B2019;
+  --gold:       #C9A227;
+  --gold-soft:  #E3C56B;
+  --ivory:      #F6EFE4;
+
+  --display: 'Playfair Display', serif;
+  --accent:  'Cormorant Garamond', serif;
+  --body:    'Jost', sans-serif;
+
+  --ease-lux: cubic-bezier(.2,.8,.2,1);
+}
+
+*{ margin:0; padding:0; box-sizing:border-box; }
+body{
+  background:var(--cream); font-family:var(--body);
+  min-height:100vh;
+  display:flex; flex-direction:column; justify-content:center;   /* preview only — centers the band */
+}
+img{ display:block; max-width:100%; }
+
+.wrap{ max-width:1280px; margin-inline:auto; padding-inline:clamp(20px,4vw,48px); }
+
+/* ===== button (same as homepage) ===== */
+.btn{
+  display:inline-flex; align-items:center; gap:12px;
+  font-family:var(--body); font-weight:500; font-size:.88rem;
+  letter-spacing:.12em; text-transform:uppercase;
+  padding:16px 34px; border-radius:999px; cursor:pointer; border:0;
+  text-decoration:none;
+  transition:transform .35s var(--ease-lux), box-shadow .35s ease;
+}
+.btn .arr{ transition:transform .35s var(--ease-lux); }
+.btn:hover .arr{ transform:translateX(5px); }
+.btn:focus-visible{ outline:3px solid var(--gold-soft); outline-offset:3px; }
+.btn--ivory{
+  background:var(--ivory); color:var(--terra-deep);
+  box-shadow:0 12px 30px rgba(30,20,14,.25);
+}
+.btn--ivory:hover{ transform:translateY(-3px); box-shadow:0 18px 38px rgba(30,20,14,.32); }
+
+/* ================================================================
+   CTA BAND — terracotta + flower linework + entrance animation
+   ================================================================ */
+.band{
+  position:relative;
+  background:linear-gradient(120deg, var(--terracotta), var(--terra-deep));
+  padding:clamp(64px,7vw,96px) 0;
+  text-align:center;
+  overflow:hidden;                 /* clips the flower bleed */
+}
+/* soft moving sheen */
+.band::before{
+  content:""; position:absolute; top:0; bottom:0;
+  width:40%; left:-45%; z-index:2;
+  background:linear-gradient(105deg, transparent, rgba(255,255,255,.1), transparent);
+  animation:sheen 7s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes sheen{ 0%,100%{ left:-45%; } 50%{ left:105%; } }
+
+/* content above the flowers */
+.band .wrap{ position:relative; z-index:1; }
+
+.band h2{
+  font-family:var(--display); font-weight:500;
+  font-size:clamp(1.8rem,3.4vw,2.7rem);
+  color:var(--ivory); margin-bottom:14px;
+}
+.band h2 em{ font-family:var(--accent); font-style:italic; color:var(--gold-soft); }
+.band p{
+  font-weight:300; color:rgba(246,239,228,.88);
+  margin-bottom:32px; font-size:1rem;
+}
+
+/* ---- word slide-down animation ----
+   .w = the mask (overflow hidden), .m = the word that moves.
+   Each word starts above its mask and drops into place. */
+.band .w{
+  display:inline-block; overflow:hidden;
+  vertical-align:bottom;
+  padding-bottom:.08em;            /* keeps descenders (g, y) from clipping */
+  margin-bottom:-.08em;
+}
+.band .m{
+  display:inline-block;
+  transform:translateY(-115%);
+  animation:wordDown .9s var(--ease-lux) forwards;
+  animation-delay:var(--d, 0s);
+}
+@keyframes wordDown{ to{ transform:translateY(0); } }
+
+/* ---- button slides in from the bottom ---- */
+.band .btn{
+  opacity:0; transform:translateY(46px);
+  animation:btnUp .9s var(--ease-lux) 1.05s forwards;
+}
+@keyframes btnUp{ to{ opacity:1; transform:translateY(0); } }
+
+/* ---- decorative flower linework ---- */
+.band__flower{
+  position:absolute; z-index:0;
+  pointer-events:none; user-select:none;
+  filter:invert(1);
+  mix-blend-mode:screen;
+  opacity:0;                       /* fades in after the words */
+}
+.band__flower--r{
+  width:clamp(240px,28vw,400px);
+  right:-60px; bottom:-90px;
+  animation:flowerIn 1.4s ease .9s forwards;
+  --rot:-14deg;
+}
+.band__flower--l{
+  width:clamp(150px,16vw,240px);
+  left:-40px; top:-70px;
+  transform:rotate(160deg) scaleX(-1);
+  animation:flowerInL 1.4s ease 1.1s forwards;
+}
+@keyframes flowerIn{
+  from{ opacity:0; transform:rotate(-6deg) scale(.94); }
+  to{   opacity:.28; transform:rotate(-14deg) scale(1); }
+}
+@keyframes flowerInL{
+  from{ opacity:0; transform:rotate(160deg) scaleX(-1) scale(.94); }
+  to{   opacity:.18; transform:rotate(160deg) scaleX(-1) scale(1); }
+}
+
+@media (max-width:640px){
+  .band__flower--l{ display:none; }
+  .band__flower--r{ width:220px; right:-70px; bottom:-80px; }
+  @keyframes flowerIn{
+    from{ opacity:0; transform:rotate(-6deg) scale(.94); }
+    to{   opacity:.22; transform:rotate(-14deg) scale(1); }
+  }
+}
+
+/* ---- reduced motion: everything just appears ---- */
+@media (prefers-reduced-motion: reduce){
+  .band .m{ transform:none; animation:none; }
+  .band .btn{ opacity:1; transform:none; animation:none; }
+  .band__flower--r{ opacity:.28; animation:none; }
+  .band__flower--l{ opacity:.18; animation:none; }
+  .band::before{ animation:none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ================= CTA BAND ================= -->
+<section class="band">
+  <img class="band__flower band__flower--r" src="flower-line.jpg" alt="" aria-hidden="true">
+  <img class="band__flower band__flower--l" src="flower-line.jpg" alt="" aria-hidden="true">
+
+  <div class="wrap">
+    <h2>
+      <span class="w"><span class="m" style="--d:0s">Want</span></span>
+      <span class="w"><em class="m" style="--d:.12s">natural</em></span>
+      <span class="w"><em class="m" style="--d:.24s">looking</em></span>
+      <span class="w"><span class="m" style="--d:.36s">results?</span></span>
+    </h2>
+    <p>
+      <span class="w"><span class="m" style="--d:.5s">Book</span></span>
+      <span class="w"><span class="m" style="--d:.54s">a</span></span>
+      <span class="w"><span class="m" style="--d:.58s">consultation</span></span>
+      <span class="w"><span class="m" style="--d:.62s">and</span></span>
+      <span class="w"><span class="m" style="--d:.66s">let</span></span>
+      <span class="w"><span class="m" style="--d:.7s">our</span></span>
+      <span class="w"><span class="m" style="--d:.74s">doctors</span></span>
+      <span class="w"><span class="m" style="--d:.78s">design</span></span>
+      <span class="w"><span class="m" style="--d:.82s">a</span></span>
+      <span class="w"><span class="m" style="--d:.86s">plan</span></span>
+      <span class="w"><span class="m" style="--d:.9s">that&rsquo;s</span></span>
+      <span class="w"><span class="m" style="--d:.94s">uniquely</span></span>
+      <span class="w"><span class="m" style="--d:.98s">yours.</span></span>
+    </p>
+    <a href="#book" class="btn btn--ivory">Book a consultation <span class="arr" aria-hidden="true">&#8594;</span></a>
+  </div>
+</section>
+
+</body>
+</html>
