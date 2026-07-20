@@ -303,7 +303,7 @@ header.site.scrolled{box-shadow:0 12px 36px rgba(10,13,30,.55)}
    VIDEO — see the treatment explained
 ═══════════════════════════════════════════ */
 .videosec{padding:6rem 0;background:var(--paper)}
-.video-frame{position:relative;border-radius:26px;overflow:hidden;aspect-ratio:16/9;background:var(--indigo) url('machine.jpg') center/cover;box-shadow:0 34px 70px rgba(60,67,116,.22);cursor:pointer}
+.video-frame{position:relative;border-radius:26px;overflow:hidden;aspect-ratio:16/9;background:var(--indigo) url('https://i.ytimg.com/vi/BnJJfr4H6nw/maxresdefault.jpg') center/cover;box-shadow:0 34px 70px rgba(60,67,116,.22);cursor:pointer}
 .video-frame::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(46,52,87,.25),rgba(46,52,87,.55))}
 .play-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:88px;height:88px;border-radius:50%;background:#fff;border:0;cursor:pointer;display:grid;place-items:center;transition:transform .35s var(--ease);z-index:2}
 .play-btn::before{content:"";position:absolute;inset:-14px;border-radius:50%;border:1px solid rgba(255,255,255,.6);animation:ripple 2.4s var(--ease) infinite}
@@ -451,7 +451,7 @@ footer{background:var(--indigo-deep);color:rgba(255,255,255,.72);padding:4rem 0 
   <div class="head-grid">
 
     <a href="/" class="logo-block" aria-label="Vivace — home">
-      <img src="vivace_icon.png" height=60px" alt="">
+      <img src="vivace_icon.png" height="60" alt="Vivace Cosmetics &amp; Laser Clinics">
       <!-- <span class="logo">
         <svg viewBox="0 0 48 48" aria-hidden="true">
           <g fill="none" stroke="#C9A227" stroke-width="1.7" stroke-linecap="round">
@@ -698,16 +698,16 @@ footer{background:var(--indigo-deep);color:rgba(255,255,255,.72);padding:4rem 0 
   <div class="container">
     <div class="sec-head">
       <div class="rv-l">
-        <span class="eyebrow2">See it explained</span>
-        <h2>Understand the treatment <em>in two minutes</em></h2>
+      
+        <h2>Struggling with <em>menopause symptoms?</em></h2>
       </div>
-      <p class="sh-copy rv-r rv-d1">A short film on how MonaLisa Touch® restores the trophic conditions of the vaginal area minimally invasive, and designed by DEKA's laboratories in Italy.</p>
+      <p class="sh-copy rv-r rv-d1">Discover the MonaLisa Touch® treatment in this talk from Vivace Wellness: what it is, who it helps and what to expect from your sessions.</p>
     </div>
-    <div class="video-frame rv" id="videoFrame" role="button" tabindex="0" aria-label="Play video: What is MonaLisa Touch?">
+    <div class="video-frame rv" id="videoFrame" role="button" tabindex="0" aria-label="Play video: Struggling with Menopause Symptoms? Discover the MonaLisa Touch® Treatment">
       <button class="play-btn" aria-hidden="true" tabindex="-1"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
       <div class="video-cap">
-        <b>What is MonaLisa Touch®?</b>
-        <span>Watch the official explainer</span>
+        <b>Discover the MonaLisa Touch® Treatment</b>
+        <span>A talk from Vivace Wellness</span>
       </div>
     </div>
   </div>
@@ -717,7 +717,7 @@ footer{background:var(--indigo-deep);color:rgba(255,255,255,.72);padding:4rem 0 
 <div class="vmodal" id="vmodal" aria-hidden="true">
   <div class="vmodal-wrap">
     <button class="vmodal-close" id="vmodalClose">Close ✕</button>
-    <div class="vmodal-box"><iframe id="vframe" title="What is MonaLisa Touch?" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+    <div class="vmodal-box"><iframe id="vframe" title="Struggling with Menopause Symptoms? Discover the MonaLisa Touch® Treatment" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
   </div>
 </div>
 
@@ -930,7 +930,7 @@ footer{background:var(--indigo-deep);color:rgba(255,255,255,.72);padding:4rem 0 
   });
 
   /* ── Video modal ── */
-  const YT_VIDEO_ID = '7bOaiFCBl6U'; // "What is MonaLisa Touch?" (official DEKA explainer) — swap ID here if needed
+  const YT_VIDEO_ID = 'BnJJfr4H6nw'; // Vivace Wellness — Struggling with Menopause Symptoms? Discover the MonaLisa Touch® Treatment
   const vmodal = document.getElementById('vmodal');
   const vframe = document.getElementById('vframe');
   const videoFrame = document.getElementById('videoFrame');
