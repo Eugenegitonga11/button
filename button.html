@@ -1,290 +1,614 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vivace — Button Animations</title>
-<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vivace — Video Background Hero</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+
 <style>
-  :root {
-    --terracotta: #C08552;
-    --terracotta-deep: #A96D3E;
-    --cream: #FAF5EE;
-    --sand: #EFE3D3;
-    --ink: #2B2320;
-    --gold: #D4AF6A;
-  }
+/* ============================================================
+   VIVACE — NAV + YOUTUBE VIDEO BACKGROUND HERO + LIGHTBOX
+   • The Riverside Ambience video plays muted as the hero bg
+   • Clicking anywhere on the hero opens it full, with sound,
+     in a floating lightbox
+   ============================================================ */
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+:root{
+  --vv-cream:  #FAF6EF;
+  --vv-ivory:  #F6EFE4;
+  --vv-espresso:#221A16;
+  --vv-gold:   #C9A227;
+  --vv-gold-soft:#E3C56B;
+  --vv-terracotta:#C4714B;
 
-  body {
-    font-family: 'Jost', sans-serif;
-    background: var(--ink);
-    color: var(--cream);
-    min-height: 100vh;
-    padding: 60px 24px 100px;
-  }
+  --vv-display:'Playfair Display', serif;
+  --vv-body:'Jost', sans-serif;
+}
 
-  h1 {
-    font-family: 'Playfair Display', serif;
-    font-weight: 400;
-    text-align: center;
-    font-size: clamp(28px, 4vw, 40px);
-    margin-bottom: 8px;
-  }
+*{ margin:0; padding:0; box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+body{ background:var(--vv-cream); font-family:var(--vv-body); }
+ul{ list-style:none; }
+a{ text-decoration:none; }
 
-  .sub {
-    text-align: center;
-    opacity: .6;
-    margin-bottom: 64px;
-    font-size: 15px;
-    letter-spacing: .04em;
-  }
+/* ============================================================
+   HEADER / NAVIGATION
+   Sits on top of the hero. It's a sibling of the hero, so
+   clicking it never triggers the video lightbox.
+   ============================================================ */
+.vv-header{
+  position:absolute;
+  top:0; left:0; right:0;
+  z-index:50;
+  background:linear-gradient(180deg, rgba(20,14,11,0.72), rgba(20,14,11,0.28) 80%, transparent);
+}
 
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
-    max-width: 1080px;
-    margin: 0 auto;
-  }
+/* --- top strip: welcome, socials, phone --- */
+.vv-topbar{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+  padding:10px 24px;
+  font-size:0.8rem;
+  font-weight:300;
+  letter-spacing:0.08em;
+  color:rgba(246,239,228,0.85);
+  border-bottom:1px solid rgba(246,239,228,0.14);
+}
+.vv-topbar .sep{ opacity:0.4; }
+.vv-topbar__social{
+  display:flex;
+  gap:14px;
+}
+.vv-topbar__social a{
+  color:rgba(246,239,228,0.85);
+  display:grid; place-items:center;
+  transition:color .25s ease, transform .25s ease;
+}
+.vv-topbar__social a:hover{ color:var(--vv-gold-soft); transform:translateY(-1px); }
+.vv-topbar__call{ color:rgba(246,239,228,0.85); }
+.vv-topbar__call:hover{ color:var(--vv-gold-soft); }
 
-  .card {
-    background: #352B27;
-    border: 1px solid rgba(250,245,238,.08);
-    border-radius: 16px;
-    padding: 56px 24px 40px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 36px;
-  }
+/* --- main nav row --- */
+.vv-nav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+  padding:14px clamp(20px, 4vw, 48px);
+  max-width:1360px;
+  margin-inline:auto;
+}
 
-  .label {
-    font-size: 12px;
-    letter-spacing: .18em;
-    text-transform: uppercase;
-    color: var(--gold);
-  }
-  .desc {
-    font-size: 13.5px;
-    opacity: .55;
-    text-align: center;
-    line-height: 1.5;
-    max-width: 260px;
-    margin-top: -20px;
-  }
+/* logo — swap this block for your <img> logo asset */
+.vv-nav__logo{
+  display:flex;
+  flex-direction:column;
+  line-height:1;
+  color:var(--vv-ivory);
+}
+.vv-nav__logo .mark{
+  font-family:var(--vv-display);
+  font-style:italic;
+  font-size:1.7rem;
+  color:var(--vv-gold-soft);
+}
+.vv-nav__logo .name{
+  font-family:var(--vv-body);
+  font-weight:400;
+  font-size:1.05rem;
+  letter-spacing:0.42em;
+  margin-top:4px;
+}
+.vv-nav__logo .tag{
+  font-size:0.5rem;
+  font-weight:300;
+  letter-spacing:0.28em;
+  color:var(--vv-gold-soft);
+  margin-top:4px;
+  text-transform:uppercase;
+}
 
-  /* ---------- shared button base ---------- */
-  .btn {
-    font-family: 'Jost', sans-serif;
-    font-size: 16px;
-    font-weight: 500;
-    letter-spacing: .03em;
-    color: #fff;
-    background: var(--terracotta);
-    border: none;
-    border-radius: 999px;
-    padding: 16px 34px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    isolation: isolate;
-  }
+.vv-nav__links{
+  display:flex;
+  align-items:center;
+  gap:clamp(16px, 2.4vw, 34px);
+}
+.vv-nav__links a{
+  position:relative;
+  font-weight:300;
+  font-size:0.92rem;
+  letter-spacing:0.04em;
+  color:var(--vv-ivory);
+  padding:6px 0;
+  transition:color .25s ease;
+}
+.vv-nav__links a::after{
+  content:"";
+  position:absolute;
+  left:0; bottom:0;
+  width:0; height:1.5px;
+  background:var(--vv-gold);
+  transition:width .3s cubic-bezier(.2,.8,.2,1);
+}
+.vv-nav__links a:hover,
+.vv-nav__links a.is-active{ color:var(--vv-gold-soft); }
+.vv-nav__links a:hover::after,
+.vv-nav__links a.is-active::after{ width:100%; }
 
-  /* ============================================================
-     1. SOFT LIFT — lift + deepen + glow shadow
-     ============================================================ */
-  .btn-lift {
-    transition: transform .35s cubic-bezier(.22,1,.36,1),
-                box-shadow .35s cubic-bezier(.22,1,.36,1),
-                background-color .35s ease;
-  }
-  .btn-lift:hover {
-    transform: translateY(-3px);
-    background: var(--terracotta-deep);
-    box-shadow: 0 12px 28px -8px rgba(192,133,82,.55);
-  }
-  .btn-lift:active {
-    transform: translateY(-1px) scale(.98);
-    box-shadow: 0 6px 14px -6px rgba(192,133,82,.5);
-    transition-duration: .1s;
-  }
+.vv-nav__book{
+  font-weight:400;
+  font-size:0.9rem;
+  letter-spacing:0.08em;
+  color:var(--vv-gold-soft);
+  border:1px solid var(--vv-gold);
+  padding:12px 28px;
+  background:rgba(20,14,11,0.35);
+  transition:background .3s ease, color .3s ease, transform .3s ease;
+}
+.vv-nav__book:hover{
+  background:var(--vv-gold);
+  color:var(--vv-espresso);
+  transform:translateY(-2px);
+}
 
-  /* ============================================================
-     2. GOLD SHEEN — luxury shine sweep across the button
-     ============================================================ */
-  .btn-sheen { transition: transform .3s ease, box-shadow .3s ease; }
-  .btn-sheen::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(115deg,
-      transparent 30%,
-      rgba(255,240,210,.45) 48%,
-      rgba(255,240,210,.15) 52%,
-      transparent 65%);
-    transform: translateX(-110%);
-    transition: transform .7s cubic-bezier(.4,0,.2,1);
-  }
-  .btn-sheen:hover { transform: translateY(-2px); box-shadow: 0 10px 22px -8px rgba(0,0,0,.4); }
-  .btn-sheen:hover::after { transform: translateX(110%); }
+/* --- mobile menu --- */
+.vv-nav__toggle{
+  display:none;
+  background:none;
+  border:0;
+  cursor:pointer;
+  width:42px; height:42px;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+}
+.vv-nav__toggle span{
+  width:24px; height:2px;
+  background:var(--vv-ivory);
+  transition:transform .3s ease, opacity .3s ease;
+}
+.vv-nav__toggle[aria-expanded="true"] span:nth-child(1){ transform:translateY(8px) rotate(45deg); }
+.vv-nav__toggle[aria-expanded="true"] span:nth-child(2){ opacity:0; }
+.vv-nav__toggle[aria-expanded="true"] span:nth-child(3){ transform:translateY(-8px) rotate(-45deg); }
 
-  /* ============================================================
-     3. FILL SWEEP — deeper tone sweeps in from the left
-     ============================================================ */
-  .btn-fill { transition: color .35s ease; }
-  .btn-fill::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: var(--terracotta-deep);
-    transform: scaleX(0);
-    transform-origin: left center;
-    transition: transform .45s cubic-bezier(.65,0,.35,1);
-    z-index: -1;
-    border-radius: inherit;
+@media (max-width: 960px){
+  .vv-topbar{ font-size:0.72rem; gap:10px; flex-wrap:wrap; }
+  .vv-nav__toggle{ display:flex; }
+  .vv-nav__links{
+    position:absolute;
+    top:100%; left:0; right:0;
+    flex-direction:column;
+    align-items:stretch;
+    gap:0;
+    background:rgba(24,17,13,0.97);
+    backdrop-filter:blur(8px);
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .4s cubic-bezier(.2,.8,.2,1);
   }
-  .btn-fill:hover::before { transform: scaleX(1); }
-  .btn-fill:active { transform: scale(.98); }
+  .vv-nav__links.is-open{ max-height:70vh; }
+  .vv-nav__links a{
+    padding:16px 28px;
+    border-bottom:1px solid rgba(246,239,228,0.08);
+  }
+  .vv-nav__links a::after{ display:none; }
+  .vv-nav__book{ display:none; }
+}
 
-  /* ============================================================
-     4. ARROW REVEAL — arrow slides in, text shifts left
-     ============================================================ */
-  .btn-arrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 0;
-    transition: background-color .3s ease, transform .3s ease;
-  }
-  .btn-arrow .arrow {
-    display: inline-block;
-    width: 0;
-    opacity: 0;
-    transform: translateX(-6px);
-    transition: width .35s cubic-bezier(.22,1,.36,1),
-                opacity .3s ease,
-                transform .35s cubic-bezier(.22,1,.36,1);
-    white-space: nowrap;
-  }
-  .btn-arrow:hover { background: var(--terracotta-deep); transform: translateY(-2px); }
-  .btn-arrow:hover .arrow {
-    width: 22px;
-    opacity: 1;
-    transform: translateX(6px);
-  }
+/* ============================================================
+   HERO — YouTube video background
+   ============================================================ */
+.vv-hero{
+  position:relative;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  cursor:pointer;
+  overflow:hidden;
+  isolation:isolate;
+}
 
-  /* ============================================================
-     5. BREATHING PULSE — ambient attention (no hover needed)
-     ============================================================ */
-  .btn-pulse { transition: transform .3s ease, background-color .3s ease; }
-  .btn-pulse::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    box-shadow: 0 0 0 0 rgba(192,133,82,.65);
-    animation: vivacePulse 2.6s ease-out infinite;
-    z-index: -1;
-  }
-  @keyframes vivacePulse {
-    0%   { box-shadow: 0 0 0 0 rgba(192,133,82,.55); }
-    70%  { box-shadow: 0 0 0 14px rgba(192,133,82,0); }
-    100% { box-shadow: 0 0 0 0 rgba(192,133,82,0); }
-  }
-  .btn-pulse:hover { transform: translateY(-2px); background: var(--terracotta-deep); }
-  .btn-pulse:hover::before { animation-play-state: paused; box-shadow: none; }
+/* poster image shows while the video loads / if it can't play */
+.vv-hero__poster{
+  position:absolute; inset:0;
+  z-index:-3;
+  background:
+    url('https://images.unsplash.com/photo-1600334129128-685c5582fd35?q=80&w=1800&auto=format&fit=crop')
+    center/cover no-repeat;             /* ← swap for a still from the video */
+}
 
-  /* ============================================================
-     6. GOLD RING TRACE — thin gold ring draws around on hover
-     ============================================================ */
-  .btn-ring { transition: transform .3s ease, box-shadow .3s ease; }
-  .btn-ring::after {
-    content: "";
-    position: absolute;
-    inset: -5px;
-    border-radius: inherit;
-    border: 1.5px solid var(--gold);
-    opacity: 0;
-    transform: scale(.92);
-    transition: opacity .35s ease, transform .45s cubic-bezier(.22,1,.36,1);
-    pointer-events: none;
-  }
-  .btn-ring:hover { transform: translateY(-2px); }
-  .btn-ring:hover::after { opacity: 1; transform: scale(1); }
+/* the video background itself.
+   The iframe is oversized so a 16:9 video always covers the
+   hero, whatever the screen shape (like object-fit: cover). */
+.vv-hero__video{
+  position:absolute; inset:0;
+  z-index:-2;
+  overflow:hidden;
+  pointer-events:none;    /* clicks pass through to the hero */
+}
+.vv-hero__video iframe{
+  position:absolute;
+  top:50%; left:50%;
+  transform:translate(-50%, -50%);
+  width:max(100vw, 177.78vh);   /* 16/9 × height  */
+  height:max(100vh, 56.25vw);   /* 9/16 × width   */
+  border:0;
+  pointer-events:none;
+}
 
-  /* respect reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    .btn, .btn::before, .btn::after, .btn * {
-      animation: none !important;
-      transition: none !important;
-    }
-  }
+/* warm dark overlay for text legibility */
+.vv-hero::before{
+  content:"";
+  position:absolute; inset:0;
+  z-index:-1;
+  background:linear-gradient(180deg,
+    rgba(24,17,13,0.74) 0%,
+    rgba(24,17,13,0.5) 45%,
+    rgba(24,17,13,0.66) 100%);
+}
 
-  .btn:focus-visible {
-    outline: 2px solid var(--gold);
-    outline-offset: 4px;
-  }
-    nav{
-    text-align: center;
-  }
-  nav a{
-    text-decoration: none;
-    color: #fff;
-  }
-  nav a:hover{
-    color: #efca0e;
-  }
+.vv-hero__wave{
+  position:absolute;
+  left:0; right:0; bottom:-1px;
+  width:100%;
+  height:110px;
+  pointer-events:none;
+}
+
+.vv-hero__content{
+  position:relative;
+  padding:170px 24px 180px;
+  max-width:840px;
+}
+
+.vv-hero__title{
+  font-family:var(--vv-display);
+  font-weight:400;
+  font-size:clamp(2.6rem, 6.5vw, 4.6rem);
+  line-height:1.15;
+  color:var(--vv-ivory);
+  margin-bottom:22px;
+  text-shadow:0 2px 24px rgba(0,0,0,0.4);
+}
+
+.vv-hero__sub{
+  font-weight:300;
+  font-size:clamp(1rem, 1.6vw, 1.15rem);
+  color:rgba(246,239,228,0.92);
+  margin-bottom:36px;
+}
+
+.vv-hero__actions{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:28px;
+  flex-wrap:wrap;
+}
+
+.vv-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  font-weight:400;
+  font-size:0.95rem;
+  padding:14px 30px;
+  border-radius:999px;
+  transition:transform .3s ease, box-shadow .3s ease;
+}
+.vv-btn--solid{
+  background:var(--vv-terracotta);
+  color:#fff;
+  box-shadow:0 10px 26px rgba(196,113,75,0.35);
+}
+.vv-btn--solid:hover{ transform:translateY(-2px); box-shadow:0 14px 32px rgba(196,113,75,0.45); }
+.vv-btn--ghost{
+  color:var(--vv-ivory);
+  text-decoration:underline;
+  text-underline-offset:6px;
+}
+.vv-btn:focus-visible{ outline:3px solid var(--vv-gold-soft); outline-offset:3px; }
+
+/* pulsing "watch with sound" badge */
+.vv-hero__watch{
+  position:absolute;
+  left:50%;
+  bottom:135px;
+  transform:translateX(-50%);
+  display:inline-flex;
+  align-items:center;
+  gap:12px;
+  font-size:0.8rem;
+  font-weight:400;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  color:var(--vv-ivory);
+  pointer-events:none;
+  white-space:nowrap;
+}
+.vv-hero__watch .play{
+  width:50px; height:50px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:rgba(246,239,228,0.14);
+  border:1px solid rgba(246,239,228,0.5);
+  backdrop-filter:blur(4px);
+  position:relative;
+}
+.vv-hero__watch .play::before{
+  content:"";
+  position:absolute; inset:0;
+  border-radius:50%;
+  border:1px solid rgba(246,239,228,0.45);
+  animation:vv-pulse 2.4s ease-out infinite;
+}
+.vv-hero__watch .play svg{ margin-left:3px; }
+
+@keyframes vv-pulse{
+  0%   { transform:scale(1);   opacity:0.9; }
+  100% { transform:scale(1.9); opacity:0; }
+}
+
+/* ============================================================
+   FLOATING YOUTUBE LIGHTBOX (with sound)
+   ============================================================ */
+.vv-lightbox{
+  position:fixed;
+  inset:0;
+  z-index:1000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:rgba(15,10,8,0.88);
+  backdrop-filter:blur(6px);
+  opacity:0;
+  visibility:hidden;
+  transition:opacity .35s ease, visibility .35s ease;
+}
+.vv-lightbox.is-open{ opacity:1; visibility:visible; }
+
+.vv-lightbox__frame{
+  position:relative;
+  width:min(1100px, 92vw);
+  aspect-ratio:16/9;
+  border-radius:18px;
+  overflow:hidden;
+  background:#000;
+  box-shadow:0 40px 100px rgba(0,0,0,0.6);
+  transform:scale(0.94) translateY(14px);
+  transition:transform .4s cubic-bezier(.2,.8,.2,1);
+}
+.vv-lightbox.is-open .vv-lightbox__frame{ transform:scale(1) translateY(0); }
+.vv-lightbox__frame iframe{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  border:0;
+}
+
+.vv-lightbox__close{
+  position:absolute;
+  top:-18px; right:-18px;
+  width:44px; height:44px;
+  border-radius:50%;
+  border:0;
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+  background:var(--vv-gold);
+  color:var(--vv-espresso);
+  font-size:1.1rem;
+  box-shadow:0 8px 22px rgba(0,0,0,0.4);
+  transition:transform .25s ease, background .25s ease;
+  z-index:2;
+}
+.vv-lightbox__close:hover{ transform:rotate(90deg); background:var(--vv-gold-soft); }
+.vv-lightbox__close:focus-visible{ outline:3px solid var(--vv-ivory); outline-offset:2px; }
+
+@media (max-width:640px){
+  .vv-hero__watch{ bottom:115px; font-size:0.7rem; }
+  .vv-lightbox__close{ top:10px; right:10px; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .vv-lightbox, .vv-lightbox__frame, .vv-btn,
+  .vv-lightbox__close, .vv-nav__links{ transition:none; }
+  .vv-hero__watch .play::before{ animation:none; }
+}
 </style>
 </head>
 <body>
-<nav>
-  <a href="index.html">Buttons </a>  |
-  <a href="fonts.html">Fonts</a>
-  <a href="hero.html">Hero section</a>
-</nav>
-<h1>Book a Consultation</h1>
-<p class="sub">Six hover animation options · Vivace design system</p>
 
-<div class="grid">
+<!-- ============================================================
+     HEADER / NAV — sibling of the hero, so clicks here never
+     open the video lightbox
+     ============================================================ -->
+<header class="vv-header">
 
-  <div class="card">
-    <span class="label">01 · Soft Lift</span>
-    <p class="desc">Lifts up with a warm terracotta glow. Subtle, premium, safest choice.</p>
-    <button class="btn btn-lift">Book a consultation</button>
+  <div class="vv-topbar">
+    <span>Welcome to Vivace</span>
+    <span class="sep">|</span>
+    <div class="vv-topbar__social">
+      <a href="https://facebook.com" aria-label="Vivace on Facebook" target="_blank" rel="noopener">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12Z"/></svg>
+      </a>
+      <a href="https://instagram.com" aria-label="Vivace on Instagram" target="_blank" rel="noopener">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.2c3.2 0 3.6 0 4.8.1 1.2.1 1.9.2 2.3.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1.1.4 2.3.1 1.2.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 1.2-.2 1.9-.4 2.3-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1.1.4-2.3.4-1.2.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-1.2-.1-1.9-.2-2.3-.4a3.8 3.8 0 0 1-1.4-.9 3.8 3.8 0 0 1-.9-1.4c-.2-.4-.4-1.1-.4-2.3-.1-1.2-.1-1.6-.1-4.8s0-3.6.1-4.8c.1-1.2.2-1.9.4-2.3.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1.1-.4 2.3-.4 1.2-.1 1.6-.1 4.8-.1Zm0 1.8c-3.1 0-3.5 0-4.7.1-1.1.1-1.7.2-2.1.4-.5.2-.9.4-1.2.8-.4.3-.6.7-.8 1.2-.2.4-.3 1-.4 2.1-.1 1.2-.1 1.6-.1 4.7s0 3.5.1 4.7c.1 1.1.2 1.7.4 2.1.2.5.4.9.8 1.2.3.4.7.6 1.2.8.4.2 1 .3 2.1.4 1.2.1 1.6.1 4.7.1s3.5 0 4.7-.1c1.1-.1 1.7-.2 2.1-.4.5-.2.9-.4 1.2-.8.4-.3.6-.7.8-1.2.2-.4.3-1 .4-2.1.1-1.2.1-1.6.1-4.7s0-3.5-.1-4.7c-.1-1.1-.2-1.7-.4-2.1a3 3 0 0 0-.8-1.2 3 3 0 0 0-1.2-.8c-.4-.2-1-.3-2.1-.4-1.2-.1-1.6-.1-4.7-.1Zm0 3.1a4.9 4.9 0 1 1 0 9.8 4.9 4.9 0 0 1 0-9.8Zm0 8.1a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Zm6.2-8.3a1.1 1.1 0 1 1-2.3 0 1.1 1.1 0 0 1 2.3 0Z"/></svg>
+      </a>
+      <a href="https://youtube.com" aria-label="Vivace on YouTube" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.3 31.3 0 0 0 0 12a31.3 31.3 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.3 31.3 0 0 0 24 12a31.3 31.3 0 0 0-.5-5.8ZM9.6 15.6V8.4L15.8 12l-6.2 3.6Z"/></svg>
+      </a>
+      <a href="https://tiktok.com" aria-label="Vivace on TikTok" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19.6 6.7a5.6 5.6 0 0 1-3.4-1.1 5.6 5.6 0 0 1-2.2-3.4h-3.7v13.2a2.9 2.9 0 0 1-2.9 2.8 2.9 2.9 0 0 1-2.9-2.9 2.9 2.9 0 0 1 3.8-2.7V8.8a6.6 6.6 0 0 0-5.7 11.1 6.6 6.6 0 0 0 11.3-4.6V9.4a9.3 9.3 0 0 0 5.7 1.9V7.6c-.7 0-1.4-.3-2-.9Z"/></svg>
+      </a>
+    </div>
+    <span class="sep">|</span>
+    <a class="vv-topbar__call" href="tel:+254116766666">Call Us : +254 116 766 666</a>
   </div>
 
-  <div class="card">
-    <span class="label">02 · Gold Sheen</span>
-    <p class="desc">A light sweep glides across, like light catching gold. Very "aesthetic clinic".</p>
-    <button class="btn btn-sheen">Book a consultation</button>
+  <nav class="vv-nav" aria-label="Main navigation">
+    <!-- Replace this block with your logo:
+         <a href="/"><img src="vivace-logo.png" alt="Vivace Cosmetics & Laser Clinics" height="56"></a> -->
+    <a href="/" class="vv-nav__logo" aria-label="Vivace home">
+      <span class="mark">V</span>
+      <span class="name">VIVACE</span>
+      <span class="tag">Cosmetics &amp; Laser Clinics</span>
+    </a>
+
+    <ul class="vv-nav__links" id="vvNavLinks">
+      <li><a href="/" class="is-active">Home</a></li>
+      <li><a href="/about">About</a></li>
+      <li><a href="/treatments">Treatments</a></li>
+      <li><a href="/dental">Dental</a></li>
+      <li><a href="/dermatology">Dermatology</a></li>
+      <li><a href="/blogs">Blogs</a></li>
+      <li><a href="/contact">Contact Us</a></li>
+    </ul>
+
+    <a href="#book" class="vv-nav__book">Book Now</a>
+
+    <button class="vv-nav__toggle" id="vvNavToggle"
+            aria-expanded="false" aria-controls="vvNavLinks"
+            aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+</header>
+
+<!-- ============================================================
+     HERO — video plays muted as background;
+     click anywhere → floating lightbox with sound
+     ============================================================ -->
+<section class="vv-hero" id="vvHero"
+         role="button" tabindex="0"
+         aria-label="Play the Vivace Riverside Ambience video with sound">
+
+  <div class="vv-hero__poster" aria-hidden="true"></div>
+
+  <!-- muted looping background video -->
+  <div class="vv-hero__video" aria-hidden="true">
+    <iframe
+      src="https://www.youtube.com/embed/_YWYNuqIxbw?autoplay=1&mute=1&loop=1&playlist=_YWYNuqIxbw&controls=0&rel=0&modestbranding=1&playsinline=1&disablekb=1&iv_load_policy=3"
+      title=""
+      allow="autoplay; encrypted-media"
+      tabindex="-1"></iframe>
   </div>
 
-  <div class="card">
-    <span class="label">03 · Fill Sweep</span>
-    <p class="desc">A deeper terracotta fills in from the left. Clean and decisive.</p>
-    <button class="btn btn-fill">Book a consultation</button>
+  <div class="vv-hero__content">
+    <h1 class="vv-hero__title">Embrace The<br>New You</h1>
+    <!-- <p class="vv-hero__sub">Personalized aesthetic and wellness treatments tailored to you</p> -->
+
+    <div class="vv-hero__actions">
+      <a href="#book" class="vv-btn vv-btn--solid" data-no-video>Book a consultation</a>
+      <a href="#treatments" class="vv-btn vv-btn--ghost" data-no-video>Explore treatments&#8595;</a>
+    </div> <br> <br>
   </div>
 
-  <div class="card">
-    <span class="label">04 · Arrow Reveal</span>
-    <p class="desc">An arrow slides in on hover, hinting at the next step.</p>
-    <button class="btn btn-arrow">Book a consultation<span class="arrow">&nbsp;→</span></button>
-  </div>
+  <span class="vv-hero__watch">
+    <span class="play" aria-hidden="true">
+      <svg width="15" height="17" viewBox="0 0 16 18" fill="none">
+        <path d="M15 7.27a2 2 0 0 1 0 3.46L3 17.66A2 2 0 0 1 0 15.93V2.07A2 2 0 0 1 3 .34l12 6.93Z" fill="#F6EFE4"/>
+      </svg>
+    </span>
+    Click to watch with sound
+  </span>
 
-  <div class="card">
-    <span class="label">05 · Breathing Pulse</span>
-    <p class="desc">Ambient pulse that draws the eye even without hover. Good for the hero CTA.</p>
-    <button class="btn btn-pulse">Book a consultation</button>
-  </div>
+  <svg class="vv-hero__wave" viewBox="0 0 1440 110" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,80 C240,130 480,20 720,45 C960,70 1200,120 1440,60 L1440,110 L0,110 Z" fill="#FAF6EF"/>
+  </svg>
+</section>
 
-  <div class="card">
-    <span class="label">06 · Gold Ring Trace</span>
-    <p class="desc">A thin gold ring appears around the button — ties into the gold accents.</p>
-    <button class="btn btn-ring">Book a consultation</button>
+<!-- ============================================================
+     FLOATING LIGHTBOX (opens with sound)
+     ============================================================ -->
+<div class="vv-lightbox" id="vvLightbox" role="dialog" aria-modal="true"
+     aria-label="Vivace Riverside Ambience video">
+  <div class="vv-lightbox__frame">
+    <button class="vv-lightbox__close" id="vvLightboxClose" aria-label="Close video">&#10005;</button>
+    <iframe id="vvLightboxIframe"
+            src=""
+            title="Introducing Vivace Riverside Ambience"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen></iframe>
   </div>
-
 </div>
+
+<script>
+(function(){
+  const YT_VIDEO_ID = "_YWYNuqIxbw";
+
+  /* ---------- mobile nav ---------- */
+  const navToggle = document.getElementById('vvNavToggle');
+  const navLinks  = document.getElementById('vvNavLinks');
+  navToggle.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('is-open');
+    navToggle.setAttribute('aria-expanded', open);
+    navToggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  });
+
+  /* ---------- video lightbox ---------- */
+  const hero      = document.getElementById('vvHero');
+  const lightbox  = document.getElementById('vvLightbox');
+  const iframe    = document.getElementById('vvLightboxIframe');
+  const closeBtn  = document.getElementById('vvLightboxClose');
+  const bgVideo   = document.querySelector('.vv-hero__video iframe');
+  const bgSrc     = bgVideo.src;
+  let lastFocused = null;
+
+  function openVideo(){
+    lastFocused = document.activeElement;
+    /* start the lightbox video from the beginning, with sound */
+    iframe.src = "https://www.youtube.com/embed/" + YT_VIDEO_ID +
+                 "?autoplay=1&rel=0&modestbranding=1";
+    /* pause the background video while the lightbox is open,
+       so two copies aren't playing at once */
+    bgVideo.src = "";
+    lightbox.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+    closeBtn.focus();
+  }
+
+  function closeVideo(){
+    lightbox.classList.remove('is-open');
+    document.body.style.overflow = '';
+    setTimeout(() => {
+      iframe.src = "";        /* stops lightbox audio instantly   */
+      bgVideo.src = bgSrc;    /* resume the muted background loop */
+    }, 350);
+    if(lastFocused) lastFocused.focus();
+  }
+
+  hero.addEventListener('click', (e) => {
+    if (e.target.closest('[data-no-video], a, button')) return;
+    openVideo();
+  });
+
+  hero.addEventListener('keydown', (e) => {
+    if ((e.key === 'Enter' || e.key === ' ') && e.target === hero){
+      e.preventDefault();
+      openVideo();
+    }
+  });
+
+  closeBtn.addEventListener('click', closeVideo);
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeVideo();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lightbox.classList.contains('is-open')) closeVideo();
+  });
+})();
+</script>
 
 </body>
 </html>
