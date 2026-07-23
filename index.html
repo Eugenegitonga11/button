@@ -196,7 +196,7 @@ header.site.scrolled{box-shadow:0 12px 36px rgba(10,13,30,.55)}
 ═══════════════════════════════════════════ */
 .sec-head{display:grid;grid-template-columns:1.2fr .8fr;gap:3rem;align-items:end;margin-bottom:3.4rem}
 .sec-head .eyebrow2{font-size:.7rem;letter-spacing:.32em;text-transform:uppercase;color:var(--mlt);display:flex;align-items:center;gap:.6rem;margin-bottom:1rem}
-.sec-head .eyebrow2::before{content:"";width:34px;height:1px;background:var(--mlt)}
+/* .sec-head .eyebrow2::before{content:"";width:34px;height:1px;background:var(--mlt)} */
 .sec-head h2{font-family:var(--display);font-weight:500;font-size:clamp(2rem,3.6vw,3rem);line-height:1.15;color:var(--gray)}
 .sec-head h2 em{font-style:normal;color:var(--mlt)}
 .sec-head .sh-copy{color:var(--gray-soft);font-size:.98rem;padding-bottom:.4rem}
@@ -300,19 +300,53 @@ header.site.scrolled{box-shadow:0 12px 36px rgba(10,13,30,.55)}
 .j-card p{font-size:.85rem;color:var(--gray-soft)}
 
 /* ═══════════════════════════════════════════
-   VIDEO — see the treatment explained
+   VIDEO CAROUSEL — focus-scale poster cards
 ═══════════════════════════════════════════ */
-.videosec{padding:6rem 0;background:var(--paper)}
-.video-frame{position:relative;border-radius:26px;overflow:hidden;aspect-ratio:16/9;background:var(--indigo) url('https://i.ytimg.com/vi/BnJJfr4H6nw/maxresdefault.jpg') center/cover;box-shadow:0 34px 70px rgba(60,67,116,.22);cursor:pointer}
-.video-frame::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(46,52,87,.25),rgba(46,52,87,.55))}
-.play-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:88px;height:88px;border-radius:50%;background:#fff;border:0;cursor:pointer;display:grid;place-items:center;transition:transform .35s var(--ease);z-index:2}
-.play-btn::before{content:"";position:absolute;inset:-14px;border-radius:50%;border:1px solid rgba(255,255,255,.6);animation:ripple 2.4s var(--ease) infinite}
-@keyframes ripple{0%{transform:scale(.85);opacity:1}100%{transform:scale(1.35);opacity:0}}
-.play-btn svg{width:26px;height:26px;fill:var(--mlt-deep);margin-left:5px}
-.video-frame:hover .play-btn{transform:translate(-50%,-50%) scale(1.08)}
-.video-cap{position:absolute;left:2rem;bottom:1.6rem;z-index:2;color:#fff}
-.video-cap b{display:block;font-weight:600;font-size:1.05rem}
-.video-cap span{font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.75)}
+.videosec{padding:6.5rem 0;background:radial-gradient(ellipse 70% 60% at 50% 62%,rgba(123,132,200,.5),transparent 68%),linear-gradient(180deg,#171B33 0%,#242A50 45%,#171B33 100%);position:relative;overflow:hidden;color:#fff}
+.videosec::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:26px 26px;opacity:.5;pointer-events:none}
+.videosec .sec-head h2{color:#fff}
+.videosec .sec-head h2 em{color:var(--mlt-soft)}
+.videosec .sec-head .sh-copy{color:rgba(255,255,255,.68)}
+.videosec .sec-head .eyebrow2{color:var(--mlt-soft)}
+.videosec .sec-head .eyebrow2::before{background:var(--mlt-soft)}
+
+.vcarousel{position:relative;z-index:2}
+.vcarousel-track{display:flex;gap:1.1rem;overflow-x:auto;scroll-snap-type:x mandatory;padding:2.4rem calc(50% - 115px) 1.2rem;-ms-overflow-style:none;scrollbar-width:none;cursor:grab}
+.vcarousel-track::-webkit-scrollbar{display:none}
+.vcarousel-track:active{cursor:grabbing}
+
+.vcard{flex:0 0 auto;width:230px;aspect-ratio:2/3;scroll-snap-align:center;border-radius:18px;position:relative;overflow:hidden;background:var(--indigo-deep) center/cover;transform:scale(.84);opacity:.5;transition:transform .5s var(--ease),opacity .5s var(--ease),box-shadow .5s var(--ease);cursor:pointer;box-shadow:0 18px 40px rgba(0,0,0,.35)}
+.vcard::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,13,30,0) 42%,rgba(10,13,30,.88) 100%);transition:opacity .4s}
+.vcard.focused{transform:scale(1.1);opacity:1;box-shadow:0 34px 74px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.16);z-index:3}
+
+.vcard-badge-tl{position:absolute;top:.7rem;left:.7rem;width:26px;height:26px;border-radius:50%;background:rgba(10,13,30,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:grid;place-items:center;z-index:2;border:1px solid rgba(255,255,255,.18)}
+.vcard-badge-tl svg{width:12px;height:12px;fill:var(--mlt-soft)}
+.vcard-badge-tr{position:absolute;top:.7rem;right:.7rem;background:rgba(255,255,255,.94);color:var(--indigo-deep);font-size:.62rem;font-weight:600;letter-spacing:.01em;padding:.28rem .55rem;border-radius:100px;z-index:2;display:flex;align-items:center;gap:.22rem}
+.vcard-badge-tr svg{width:9px;height:9px;fill:var(--mlt-deep)}
+
+.vcard-info{position:absolute;left:.95rem;right:.95rem;bottom:.9rem;z-index:2}
+.vcard-info b{display:block;font-family:var(--body);font-size:.94rem;font-weight:600;line-height:1.28;color:#fff}
+.vcard-info span{font-size:.66rem;color:rgba(255,255,255,.65);margin-top:.2rem;display:block;letter-spacing:.02em}
+
+.vcard-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(.65);width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.95);display:grid;place-items:center;opacity:0;transition:opacity .4s var(--ease),transform .4s var(--ease);z-index:3}
+.vcard.focused .vcard-play{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.vcard-play svg{width:18px;height:18px;fill:var(--mlt-deep);margin-left:2px}
+
+.vcarousel-arrow{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;background:rgba(10,13,30,.55);border:1px solid rgba(255,255,255,.22);color:#fff;display:grid;place-items:center;cursor:pointer;z-index:4;transition:background .3s,transform .3s;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.vcarousel-arrow:hover{background:var(--mlt-deep);transform:translateY(-50%) scale(1.06)}
+.vcarousel-arrow.prev{left:1rem}
+.vcarousel-arrow.next{right:1rem}
+.vcarousel-arrow svg{width:16px;height:16px;fill:#fff}
+
+.vcarousel-more{text-align:center;margin-top:.6rem;position:relative;z-index:2}
+.vcarousel-more a{color:var(--lav);border-color:rgba(201,205,233,.5)}
+.vcarousel-more a:hover{color:#fff;border-color:#fff}
+
+@media (max-width:760px){
+  .vcarousel-arrow{display:none}
+  .vcard{width:180px}
+  .vcarousel-track{padding-inline:calc(50% - 90px)}
+}
 
 /* video modal */
 .vmodal{position:fixed;inset:0;background:rgba(30,34,58,.85);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:none;place-items:center;z-index:1200;padding:1.5rem}
@@ -432,8 +466,7 @@ footer{background:var(--indigo-deep);color:rgba(255,255,255,.72);padding:4rem 0 
   .loc-grid{grid-template-columns:1fr}
   .cta-band{margin:0 1.2rem 3.5rem}
   .container{padding:0 1.5rem}
-  .video-cap{left:1.2rem;bottom:1.1rem}
-  .play-btn{width:68px;height:68px}
+  .play-btn{width:56px;height:56px}
 }
 @media (max-width: 560px){
   .j-track{grid-template-columns:1fr}
@@ -592,7 +625,7 @@ footer{background:var(--indigo-deep);color:rgba(255,255,255,.72);padding:4rem 0 
 </section>
 
 <!-- ══════════ SCIENCE / HOW IT WORKS ══════════ -->
-<section class="science" id="how-it-works">
+<!-- <section class="science" id="how-it-works">
   <span class="star" style="top:12%;left:8%">✦</span>
   <span class="star s2" style="top:22%;right:10%">✦</span>
   <span class="star s3" style="bottom:16%;left:14%">✦</span>
@@ -643,7 +676,7 @@ footer{background:var(--indigo-deep);color:rgba(255,255,255,.72);padding:4rem 0 
     <div class="metric rv rv-d2"><div class="m-num">0</div><div class="m-lbl">Hormones · Anaesthesia</div></div>
     <div class="metric rv rv-d3"><div class="m-num">Same day</div><div class="m-lbl">Return to routine</div></div>
   </div>
-</section>
+</section> -->
 
 <!-- ══════════ JOURNEY ══════════ -->
 <section class="journey" id="journey">
@@ -693,22 +726,55 @@ footer{background:var(--indigo-deep);color:rgba(255,255,255,.72);padding:4rem 0 
   </div>
 </section>
 
-<!-- ══════════ VIDEO ══════════ -->
+<!-- ══════════ VIDEO CAROUSEL ══════════ -->
 <section class="videosec" id="video">
   <div class="container">
     <div class="sec-head">
       <div class="rv-l">
-      
+        <span class="eyebrow2">Watch &amp; learn</span>
         <h2>Struggling with <em>menopause symptoms?</em></h2>
       </div>
-      <p class="sh-copy rv-r rv-d1">Discover the MonaLisa Touch® treatment in this talk from Vivace Wellness: what it is, who it helps and what to expect from your sessions.</p>
+      <p class="sh-copy rv-r rv-d1">Hear from Dr. Manaal and past patients on the MonaLisa Touch® treatment what it is, who it helps and what to expect from your sessions.</p>
     </div>
-    <div class="video-frame rv" id="videoFrame" role="button" tabindex="0" aria-label="Play video: Struggling with Menopause Symptoms? Discover the MonaLisa Touch® Treatment">
-      <button class="play-btn" aria-hidden="true" tabindex="-1"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
-      <div class="video-cap">
-        <b>Discover the MonaLisa Touch® Treatment</b>
-        <span>A talk from Vivace Wellness</span>
+  </div>
+
+  <div class="vcarousel">
+    <button class="vcarousel-arrow prev" id="vPrev" aria-label="Previous video"><svg viewBox="0 0 24 24"><path d="M15 4l-8 8 8 8"/></svg></button>
+    <div class="vcarousel-track" id="vTrack">
+      <div class="vcard" data-yt="BnJJfr4H6nw" style="background-image:url('https://i.ytimg.com/vi/BnJJfr4H6nw/maxresdefault.jpg')" role="button" tabindex="0" aria-label="Play video: Discover the MonaLisa Touch Treatment">
+        <span class="vcard-badge-tl"><svg viewBox="0 0 24 24"><path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.5-4.8 2.5.9-5.4L4.2 7.7l5.4-.8z"/></svg></span>
+        <span class="vcard-badge-tr"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg> 6:12</span>
+        <button class="vcard-play" tabindex="-1" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+        <div class="vcard-info"><b>Discover MonaLisa Touch®</b><span>Vivace Wellness talk</span></div>
       </div>
+
+      <div class="vcard" data-yt="REPLACE_ID_2" style="background-image:url('REPLACE_THUMB_2.jpg')" role="button" tabindex="0" aria-label="Play video: Meet Dr. Manaal">
+        <span class="vcard-badge-tl"><svg viewBox="0 0 24 24"><path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.5-4.8 2.5.9-5.4L4.2 7.7l5.4-.8z"/></svg></span>
+        <span class="vcard-badge-tr"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg> 4:35</span>
+        <button class="vcard-play" tabindex="-1" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+        <div class="vcard-info"><b>Meet Dr. Manaal</b><span>Q&amp;A · Women's wellness</span></div>
+      </div>
+
+      <div class="vcard" data-yt="REPLACE_ID_3" style="background-image:url('REPLACE_THUMB_3.jpg')" role="button" tabindex="0" aria-label="Play video: A patient's story">
+        <span class="vcard-badge-tl"><svg viewBox="0 0 24 24"><path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.5-4.8 2.5.9-5.4L4.2 7.7l5.4-.8z"/></svg></span>
+        <span class="vcard-badge-tr"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg> 3:48</span>
+        <button class="vcard-play" tabindex="-1" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+        <div class="vcard-info"><b>A Patient's Story</b><span>Life after treatment</span></div>
+      </div>
+
+      <div class="vcard" data-yt="REPLACE_ID_4" style="background-image:url('REPLACE_THUMB_4.jpg')" role="button" tabindex="0" aria-label="Play video: Inside the treatment room">
+        <span class="vcard-badge-tl"><svg viewBox="0 0 24 24"><path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.5-4.8 2.5.9-5.4L4.2 7.7l5.4-.8z"/></svg></span>
+        <span class="vcard-badge-tr"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg> 5:02</span>
+        <button class="vcard-play" tabindex="-1" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+        <div class="vcard-info"><b>Inside the Treatment Room</b><span>What a session looks like</span></div>
+      </div>
+    </div>
+    <button class="vcarousel-arrow next" id="vNext" aria-label="Next video"><svg viewBox="0 0 24 24"><path d="M9 4l8 8-8 8"/></svg></button>
+  </div>
+
+  <div class="container">
+    <div class="vcarousel-more">
+      <a href="#" class="btn-ghost-link" target="_blank" rel="noopener">More on our YouTube channel <span class="arr">→</span></a>
     </div>
   </div>
 </section>
@@ -717,7 +783,7 @@ footer{background:var(--indigo-deep);color:rgba(255,255,255,.72);padding:4rem 0 
 <div class="vmodal" id="vmodal" aria-hidden="true">
   <div class="vmodal-wrap">
     <button class="vmodal-close" id="vmodalClose">Close ✕</button>
-    <div class="vmodal-box"><iframe id="vframe" title="Struggling with Menopause Symptoms? Discover the MonaLisa Touch® Treatment" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+    <div class="vmodal-box"><iframe id="vframe" title="MonaLisa Touch® video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
   </div>
 </div>
 
@@ -725,8 +791,8 @@ footer{background:var(--indigo-deep);color:rgba(255,255,255,.72);padding:4rem 0 
 <section class="quote">
   <div class="container rv">
     <span class="q-mark">“</span>
-    <blockquote>For years I thought this was simply something women had to live with. After my sessions at Vivace, <em>I finally feel like myself again.</em></blockquote>
-    <div class="q-by">— MonaLisa Touch® patient · <b>Vivace Riverside</b></div>
+    <blockquote>Every time I felt a tickle in my nose, I had to clench twice as hard else a few drops would sneak out... it is quite embarrassing and frustrating.<em> Two sessions in of the Monalisa, 5 sessions of the Sculptix seem to have sorted my sneaky leaky situation!!</em>Dr. Natasha and Dr. Manaal have been absolutely great throughout my treatment period.</blockquote>
+    <div class="q-by">— MonaLisa Touch® GLADYS · <b>Vivace Riverside</b></div>
   </div>
 </section>
 
@@ -790,7 +856,7 @@ footer{background:var(--indigo-deep);color:rgba(255,255,255,.72);padding:4rem 0 
       </div>
       <div class="faq-item">
         <button class="faq-q" aria-expanded="false">Is it safe if I can't use hormone therapy?<span class="fi">+</span></button>
-        <div class="faq-a"><p>Yes — this is one of the treatment's greatest strengths. Because it is entirely hormone‑free, it is suitable for breast cancer survivors and women for whom oestrogen‑based therapies are contraindicated. Always confirm suitability at your consultation.</p></div>
+        <div class="faq-a"><p>Yes,this is one of the treatment's greatest strengths. Because it is entirely hormone‑free, it is suitable for breast cancer survivors and women for whom oestrogen‑based therapies are contraindicated. Always confirm suitability at your consultation.</p></div>
       </div>
       <div class="faq-item">
         <button class="faq-q" aria-expanded="false">Is there any downtime?<span class="fi">+</span></button>
@@ -930,12 +996,12 @@ footer{background:var(--indigo-deep);color:rgba(255,255,255,.72);padding:4rem 0 
   });
 
   /* ── Video modal ── */
-  const YT_VIDEO_ID = 'BnJJfr4H6nw'; // Vivace Wellness — Struggling with Menopause Symptoms? Discover the MonaLisa Touch® Treatment
   const vmodal = document.getElementById('vmodal');
   const vframe = document.getElementById('vframe');
-  const videoFrame = document.getElementById('videoFrame');
-  function openVideo(){
-    vframe.src = 'https://www.youtube-nocookie.com/embed/' + YT_VIDEO_ID + '?autoplay=1&rel=0';
+  let lastTrigger = null;
+  function openVideo(ytId, trigger){
+    lastTrigger = trigger;
+    vframe.src = 'https://www.youtube-nocookie.com/embed/' + ytId + '?autoplay=1&rel=0';
     vmodal.classList.add('open');
     vmodal.setAttribute('aria-hidden','false');
     document.body.style.overflow = 'hidden';
@@ -946,13 +1012,61 @@ footer{background:var(--indigo-deep);color:rgba(255,255,255,.72);padding:4rem 0 
     vmodal.setAttribute('aria-hidden','true');
     vframe.src = '';
     document.body.style.overflow = '';
-    videoFrame.focus();
+    if(lastTrigger) lastTrigger.focus();
   }
-  videoFrame.addEventListener('click', openVideo);
-  videoFrame.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openVideo(); } });
   document.getElementById('vmodalClose').addEventListener('click', closeVideo);
   vmodal.addEventListener('click', e => { if(e.target === vmodal) closeVideo(); });
   document.addEventListener('keydown', e => { if(e.key === 'Escape' && vmodal.classList.contains('open')) closeVideo(); });
+
+  /* ── Video carousel: focus-scale center card, arrows, click/keyboard ── */
+  const vTrack = document.getElementById('vTrack');
+  if(vTrack){
+    const vCards = Array.from(vTrack.querySelectorAll('.vcard'));
+    let focusTicking = false;
+
+    function updateFocusedCard(){
+      focusTicking = false;
+      const trackRect = vTrack.getBoundingClientRect();
+      const center = trackRect.left + trackRect.width / 2;
+      let closest = null, closestDist = Infinity;
+      vCards.forEach(card => {
+        const r = card.getBoundingClientRect();
+        const cardCenter = r.left + r.width / 2;
+        const dist = Math.abs(cardCenter - center);
+        if(dist < closestDist){ closestDist = dist; closest = card; }
+      });
+      vCards.forEach(card => card.classList.toggle('focused', card === closest));
+    }
+
+    vTrack.addEventListener('scroll', () => {
+      if(!focusTicking){ focusTicking = true; requestAnimationFrame(updateFocusedCard); }
+    }, {passive:true});
+
+    vCards.forEach(card => {
+      const activate = () => {
+        if(card.classList.contains('focused')){
+          openVideo(card.dataset.yt, card);
+        } else {
+          card.scrollIntoView({behavior: reduced ? 'auto' : 'smooth', inline:'center', block:'nearest'});
+        }
+      };
+      card.addEventListener('click', activate);
+      card.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); activate(); } });
+    });
+
+    const vPrev = document.getElementById('vPrev');
+    const vNext = document.getElementById('vNext');
+    function scrollByCard(dir){
+      const card = vCards[0];
+      const step = card ? card.getBoundingClientRect().width + 18 : 240;
+      vTrack.scrollBy({left: dir * step, behavior: reduced ? 'auto' : 'smooth'});
+    }
+    vPrev.addEventListener('click', () => scrollByCard(-1));
+    vNext.addEventListener('click', () => scrollByCard(1));
+
+    window.addEventListener('resize', () => { if(!focusTicking){ focusTicking = true; requestAnimationFrame(updateFocusedCard); } });
+    requestAnimationFrame(updateFocusedCard);
+  }
 })();
 </script>
 </body>

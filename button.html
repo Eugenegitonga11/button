@@ -7,7 +7,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Jost:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@1,500&display=swap" rel="stylesheet">
 
 <style>
 /* ============================================================
@@ -27,6 +27,8 @@
 
   --vv-display:'Playfair Display', serif;
   --vv-body:'Jost', sans-serif;
+
+  --vv-chat-scale:1.4;   /* size of the floating chat bubble */
 }
 
 *{ margin:0; padding:0; box-sizing:border-box; }
@@ -425,6 +427,237 @@ a{ text-decoration:none; }
   .vv-lightbox__close, .vv-nav__links{ transition:none; }
   .vv-hero__watch .play::before{ animation:none; }
 }
+
+/* ============================================================
+   VIVACE CHAT WIDGET
+   • Frosted bubble with a travelling gold/white line
+   • Opens a pure-glassmorphism panel (no colours of its own —
+     it frosts whatever page content sits behind it)
+   • Sits UNDER the video lightbox (z 1000) so it never blocks it
+   ============================================================ */
+
+/* ── Bubble ── */
+.vivace-chat{
+  position:fixed;
+  bottom:32px;
+  right:32px;
+  width:48px;
+  height:48px;
+  border:none;
+  background:none;
+  cursor:pointer;
+  z-index:900;
+  transform:scale(var(--vv-chat-scale));
+  transform-origin:bottom right;
+  -webkit-tap-highlight-color:transparent;
+  filter:drop-shadow(0 6px 14px rgba(0,0,0,.30));
+  transition:filter .3s ease, opacity .25s ease, transform .3s cubic-bezier(.34,1.56,.64,1);
+}
+.vivace-chat.hidden{ opacity:0; pointer-events:none; transform:scale(calc(var(--vv-chat-scale) * .6)); }
+
+.vivace-chat .frost{
+  position:absolute; inset:0;
+  clip-path:path("M14 6 h20 a8 8 0 0 1 8 8 v12 a8 8 0 0 1 -8 8 H23 l-8 8 v-8 h-1 a8 8 0 0 1 -8 -8 V14 a8 8 0 0 1 8 -8 z");
+  background:linear-gradient(150deg, rgba(255,255,255,.35), rgba(255,255,255,.10) 55%, rgba(255,255,255,.20));
+  -webkit-backdrop-filter:blur(12px) saturate(1.3);
+          backdrop-filter:blur(12px) saturate(1.3);
+}
+.vivace-chat .frost::before{
+  content:""; position:absolute; top:10%; left:16%; width:52%; height:30%; border-radius:50%;
+  background:linear-gradient(180deg, rgba(255,255,255,.5), rgba(255,255,255,0));
+}
+.vivace-chat svg{ position:absolute; inset:0; width:100%; height:100%; overflow:visible; }
+
+.vivace-chat .line-base{ fill:none; stroke:url(#vivaceGoldWhite); stroke-width:2.4; stroke-linejoin:round; stroke-linecap:round; }
+.vivace-chat .line-light,
+.vivace-chat .line-glow{
+  fill:none; stroke-width:2.4; stroke-linejoin:round; stroke-linecap:round;
+  stroke-dasharray:16 84;
+  animation:vivace-travel 3.2s linear infinite;
+}
+.vivace-chat .line-light{ stroke:#fff; }
+.vivace-chat .line-light.gold{ stroke:var(--vv-gold); animation-delay:-1.6s; }
+.vivace-chat .line-glow{ stroke:#fff; stroke-width:4.5; filter:blur(3px); opacity:.75; }
+.vivace-chat .line-glow.gold{ stroke:var(--vv-gold); animation-delay:-1.6s; }
+@keyframes vivace-travel{ from{stroke-dashoffset:0} to{stroke-dashoffset:-100} }
+
+.vivace-chat:hover{ filter:drop-shadow(0 8px 18px rgba(0,0,0,.34)) drop-shadow(0 0 10px rgba(201,162,39,.35)); }
+.vivace-chat:hover .line-light,
+.vivace-chat:hover .line-glow{ animation-duration:1.6s; }
+.vivace-chat:focus-visible{ outline:none; filter:drop-shadow(0 0 10px rgba(201,162,39,.6)); }
+
+/* ── Glass panel — neutral, no own colours ── */
+.vivace-panel{
+  position:fixed;
+  bottom:32px;
+  right:32px;
+  width:min(370px, calc(100vw - 32px));
+  height:min(560px, calc(100dvh - 64px));
+  z-index:950;
+  border-radius:26px;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  background:linear-gradient(160deg, rgba(255,255,255,.28), rgba(255,255,255,.10) 45%, rgba(255,255,255,.18));
+  -webkit-backdrop-filter:blur(26px) saturate(1.4);
+          backdrop-filter:blur(26px) saturate(1.4);
+  border:1px solid rgba(255,255,255,.45);
+  box-shadow:
+    0 24px 60px rgba(0,0,0,.22),
+    inset 0 1px 1px rgba(255,255,255,.55);
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(24px) scale(.94);
+  transform-origin:bottom right;
+  transition:opacity .35s ease, transform .38s cubic-bezier(.34,1.4,.64,1);
+}
+.vivace-panel.open{ opacity:1; pointer-events:auto; transform:translateY(0) scale(1); }
+
+.vivace-panel header{
+  position:relative; z-index:1;
+  display:flex; align-items:center; gap:12px;
+  padding:16px 18px;
+  border-bottom:1px solid rgba(255,255,255,.35);
+  background:rgba(255,255,255,.14);
+}
+.vivace-panel .v-mark{
+  width:38px; height:38px; border-radius:50%;
+  display:grid; place-items:center;
+  background:rgba(255,255,255,.22);
+  border:1px solid rgba(255,255,255,.5);
+  -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+  color:var(--vv-espresso);
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic; font-size:22px; line-height:1;
+  box-shadow:0 2px 8px rgba(0,0,0,.12), inset 0 1px 1px rgba(255,255,255,.6);
+}
+.vivace-panel .head-txt strong{
+  display:block; color:var(--vv-espresso); font-weight:600; font-size:15px; letter-spacing:.02em;
+}
+.vivace-panel .head-txt span{
+  display:flex; align-items:center; gap:6px;
+  color:var(--vv-espresso); opacity:.65; font-size:12px;
+}
+.vivace-panel .dot{ width:7px; height:7px; border-radius:50%; background:#5BAE6E; box-shadow:0 0 6px #5BAE6E; }
+.vivace-panel .close-btn{
+  margin-left:auto; width:32px; height:32px; border-radius:50%; border:1px solid rgba(255,255,255,.5);
+  background:rgba(255,255,255,.30); color:var(--vv-espresso); cursor:pointer; font-size:16px; line-height:1;
+  display:grid; place-items:center;
+  transition:background .2s ease, transform .2s ease;
+}
+.vivace-panel .close-btn:hover{ background:rgba(255,255,255,.55); transform:rotate(90deg); }
+
+.vivace-panel .stream{
+  position:relative; z-index:1;
+  flex:1; overflow-y:auto;
+  padding:18px 16px;
+  display:flex; flex-direction:column; gap:12px;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(34,26,22,.30) transparent;
+}
+
+.msg{
+  max-width:88%;
+  padding:12px 15px;
+  border-radius:16px 16px 16px 5px;
+  background:rgba(255,255,255,.22);
+  -webkit-backdrop-filter:blur(8px);
+          backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.45);
+  color:var(--vv-espresso);
+  font-size:14px; line-height:1.55;
+  box-shadow:0 4px 14px rgba(0,0,0,.08);
+  opacity:0; transform:translateY(10px);
+  animation:msg-in .4s ease forwards;
+}
+.msg.user{
+  align-self:flex-end;
+  border-radius:16px 16px 5px 16px;
+  background:rgba(255,255,255,.38);
+  border-color:rgba(255,255,255,.6);
+}
+@keyframes msg-in{ to{opacity:1; transform:translateY(0)} }
+
+.msg .greet{
+  font-family:'Cormorant Garamond',serif; font-style:italic;
+  font-size:17px; color:var(--vv-espresso);
+}
+.msg ul{ list-style:none; margin-top:8px; display:flex; flex-direction:column; gap:5px; }
+.msg ul li{ display:flex; gap:8px; align-items:baseline; }
+.msg ul li::before{ content:"•"; color:rgba(34,26,22,.6); font-weight:600; }
+
+.typing{
+  align-self:flex-start; display:inline-flex; gap:5px;
+  padding:12px 16px; border-radius:16px 16px 16px 5px;
+  background:rgba(255,255,255,.22); border:1px solid rgba(255,255,255,.45);
+}
+.typing i{
+  width:7px; height:7px; border-radius:50%; background:rgba(34,26,22,.55);
+  animation:blink 1.1s ease-in-out infinite;
+}
+.typing i:nth-child(2){ animation-delay:.18s; }
+.typing i:nth-child(3){ animation-delay:.36s; }
+@keyframes blink{ 0%,70%,100%{opacity:.25; transform:translateY(0)} 35%{opacity:1; transform:translateY(-3px)} }
+
+.cta-start,
+.chip{
+  position:relative; z-index:1;
+  border:1px solid rgba(255,255,255,.55);
+  background:rgba(255,255,255,.26);
+  -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
+  color:var(--vv-espresso);
+  font-family:var(--vv-body); font-weight:500; font-size:14px;
+  border-radius:14px;
+  padding:12px 16px;
+  cursor:pointer;
+  text-align:left;
+  box-shadow:0 4px 14px rgba(0,0,0,.10), inset 0 1px 1px rgba(255,255,255,.55);
+  transition:transform .22s ease, box-shadow .22s ease, background .22s ease;
+  opacity:0; transform:translateY(10px);
+  animation:msg-in .4s ease forwards;
+}
+.cta-start{ align-self:center; font-weight:600; letter-spacing:.03em; padding:12px 26px; border-radius:999px; }
+.cta-start:hover, .chip:hover{
+  transform:translateY(-2px);
+  background:rgba(255,255,255,.42);
+  box-shadow:0 8px 20px rgba(0,0,0,.14), inset 0 1px 1px rgba(255,255,255,.7);
+}
+.chip small{ display:block; font-weight:400; font-size:12px; opacity:.7; margin-top:2px; }
+.chips{ display:flex; flex-direction:column; gap:8px; max-width:88%; }
+
+.email-row{
+  display:flex; gap:8px; max-width:88%;
+  opacity:0; transform:translateY(10px); animation:msg-in .4s ease forwards;
+}
+.email-row input{
+  flex:1; min-width:0;
+  padding:11px 14px; border-radius:12px;
+  border:1px solid rgba(255,255,255,.55);
+  background:rgba(255,255,255,.30);
+  font-family:var(--vv-body); font-size:14px; color:var(--vv-espresso);
+  outline:none;
+}
+.email-row input::placeholder{ color:rgba(34,26,22,.45); }
+.email-row input:focus{ border-color:rgba(255,255,255,.85); box-shadow:0 0 0 3px rgba(255,255,255,.25); }
+.email-row button{
+  padding:11px 16px; border-radius:12px; cursor:pointer;
+  border:1px solid rgba(255,255,255,.6);
+  background:rgba(255,255,255,.34);
+  -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
+  color:var(--vv-espresso); font-family:var(--vv-body); font-weight:600; font-size:14px;
+  transition:transform .2s ease, background .2s ease;
+}
+.email-row button:hover{ transform:translateY(-1px); background:rgba(255,255,255,.5); }
+
+@media (max-width:640px){
+  .vivace-chat{ bottom:22px; right:20px; }
+  .vivace-panel{ bottom:16px; right:16px; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .vivace-chat .line-light, .vivace-chat .line-glow{ animation:none; stroke-dasharray:none; opacity:.5; }
+  .msg, .chip, .cta-start, .email-row{ animation-duration:.01s; }
+}
 </style>
 </head>
 <body>
@@ -543,6 +776,39 @@ a{ text-decoration:none; }
   </div>
 </div>
 
+<!-- ============================================================
+     VIVACE CHAT WIDGET — bubble + glass panel
+     ============================================================ -->
+<button class="vivace-chat" id="vvChatBubble" aria-label="Chat with Vivace" aria-expanded="false">
+  <span class="frost" aria-hidden="true"></span>
+  <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="vivaceGoldWhite" x1="6" y1="6" x2="42" y2="42" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stop-color="#C9A227"/>
+        <stop offset="0.5" stop-color="#FFFFFF"/>
+        <stop offset="1" stop-color="#C9A227"/>
+      </linearGradient>
+    </defs>
+    <path class="line-base"       d="M14 6 h20 a8 8 0 0 1 8 8 v12 a8 8 0 0 1 -8 8 H23 l-8 8 v-8 h-1 a8 8 0 0 1 -8 -8 V14 a8 8 0 0 1 8 -8 z" pathLength="100"/>
+    <path class="line-glow"       d="M14 6 h20 a8 8 0 0 1 8 8 v12 a8 8 0 0 1 -8 8 H23 l-8 8 v-8 h-1 a8 8 0 0 1 -8 -8 V14 a8 8 0 0 1 8 -8 z" pathLength="100"/>
+    <path class="line-glow gold"  d="M14 6 h20 a8 8 0 0 1 8 8 v12 a8 8 0 0 1 -8 8 H23 l-8 8 v-8 h-1 a8 8 0 0 1 -8 -8 V14 a8 8 0 0 1 8 -8 z" pathLength="100"/>
+    <path class="line-light"      d="M14 6 h20 a8 8 0 0 1 8 8 v12 a8 8 0 0 1 -8 8 H23 l-8 8 v-8 h-1 a8 8 0 0 1 -8 -8 V14 a8 8 0 0 1 8 -8 z" pathLength="100"/>
+    <path class="line-light gold" d="M14 6 h20 a8 8 0 0 1 8 8 v12 a8 8 0 0 1 -8 8 H23 l-8 8 v-8 h-1 a8 8 0 0 1 -8 -8 V14 a8 8 0 0 1 8 -8 z" pathLength="100"/>
+  </svg>
+</button>
+
+<section class="vivace-panel" id="vvChatPanel" role="dialog" aria-label="Vivace virtual assistant" aria-hidden="true">
+  <header>
+    <span class="v-mark" aria-hidden="true">V</span>
+    <div class="head-txt">
+      <strong>Vivace Assistant</strong>
+      <span><i class="dot"></i> Online now</span>
+    </div>
+    <button class="close-btn" id="vvChatClose" aria-label="Close chat">&#10005;</button>
+  </header>
+  <div class="stream" id="vvChatStream"></div>
+</section>
+
 <script>
 (function(){
   const YT_VIDEO_ID = "_YWYNuqIxbw";
@@ -606,6 +872,176 @@ a{ text-decoration:none; }
   });
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && lightbox.classList.contains('is-open')) closeVideo();
+  });
+})();
+
+/* ============================================================
+   VIVACE CHAT WIDGET
+   ============================================================ */
+(function(){
+  /* ── CONFIG — matches this site's routes ── */
+  const VV = {
+    contactFormUrl : "/contact#form",       // Book a consultation → contact page form section
+    servicesUrl    : "/treatments",         // Explore our services → treatments page
+    helpDeskTel    : "tel:+254116766666",   // Talk to our help desk → dial pad, number pre-filled
+    typingDelay    : 900
+  };
+
+  const bubble = document.getElementById("vvChatBubble");
+  const panel  = document.getElementById("vvChatPanel");
+  const stream = document.getElementById("vvChatStream");
+  const close  = document.getElementById("vvChatClose");
+  let booted = false;
+
+  const scrollEnd = () => stream.scrollTo({top: stream.scrollHeight, behavior:"smooth"});
+
+  function typingDots(){
+    const t = document.createElement("div");
+    t.className = "typing";
+    t.innerHTML = "<i></i><i></i><i></i>";
+    stream.appendChild(t);
+    scrollEnd();
+    return t;
+  }
+
+  function botMsg(html, delay = VV.typingDelay){
+    return new Promise(res => {
+      const t = typingDots();
+      setTimeout(() => {
+        t.remove();
+        const m = document.createElement("div");
+        m.className = "msg";
+        m.innerHTML = html;
+        stream.appendChild(m);
+        scrollEnd();
+        res(m);
+      }, delay);
+    });
+  }
+
+  function userMsg(text){
+    const m = document.createElement("div");
+    m.className = "msg user";
+    m.textContent = text;
+    stream.appendChild(m);
+    scrollEnd();
+  }
+
+  /* ── Text message 1 ── */
+  async function boot(){
+    await botMsg(
+      `<span class="greet">Welcome to Vivace.</span><br>
+       I am your virtual assistant. You can access the following:
+       <ul>
+         <li>Book a consultation</li>
+         <li>Talk to our help desk</li>
+         <li>Explore our services</li>
+         <li>Subscribe to our updates</li>
+       </ul>
+       Tap the button below to get started.`
+    );
+    const start = document.createElement("button");
+    start.className = "cta-start";
+    start.textContent = "Get started";
+    start.addEventListener("click", () => {
+      start.remove();
+      userMsg("Get started");
+      showOptions();
+    }, {once:true});
+    stream.appendChild(start);
+    scrollEnd();
+  }
+
+  /* ── Text message 2 + clickable options ── */
+  async function showOptions(){
+    await botMsg("Select an option here:");
+    const wrap = document.createElement("div");
+    wrap.className = "chips";
+
+    const options = [
+      { label:"Book a consultation",     sub:"For any branch booking",
+        act(){ go(VV.contactFormUrl); } },
+      { label:"Explore our services",    sub:"See which treatment suits you",
+        act(){ go(VV.servicesUrl); } },
+      { label:"Subscribe to our updates",sub:"Get premium updates on offers",
+        act(){ askEmail(); } },
+      { label:"Talk to our help desk",   sub:"Call our customer services for assistance",
+        act(){ window.location.href = VV.helpDeskTel; } }
+    ];
+
+    options.forEach((o,i) => {
+      const c = document.createElement("button");
+      c.className = "chip";
+      c.style.animationDelay = (i * 90) + "ms";
+      c.innerHTML = `${o.label}<small>${o.sub}</small>`;
+      c.addEventListener("click", () => { userMsg(o.label); o.act(); });
+      wrap.appendChild(c);
+    });
+
+    stream.appendChild(wrap);
+    scrollEnd();
+  }
+
+  function go(url){
+    botMsg("Taking you there now\u2026", 500).then(() => {
+      setTimeout(() => { window.location.href = url; }, 600);
+    });
+  }
+
+  /* ── Subscribe: inline email capture ── */
+  async function askEmail(){
+    await botMsg("Lovely! Please enter your email address below and we\u2019ll keep you posted on offers and updates.");
+    const row = document.createElement("div");
+    row.className = "email-row";
+    row.innerHTML = `
+      <input type="email" placeholder="you@example.com" aria-label="Email address" autocomplete="email">
+      <button type="button">Subscribe</button>`;
+    const input = row.querySelector("input");
+    const btn   = row.querySelector("button");
+
+    const submit = () => {
+      const v = input.value.trim();
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)){
+        input.style.borderColor = "#c0392b";
+        input.focus();
+        return;
+      }
+      userMsg(v);
+      row.remove();
+      /* TODO: send `v` to your mailing endpoint, e.g.
+         fetch('/subscribe.php', {method:'POST', body:new URLSearchParams({email:v})}) */
+      botMsg("You\u2019re on the list! \u2728 Watch your inbox for exclusive Vivace offers and updates.");
+    };
+    btn.addEventListener("click", submit);
+    input.addEventListener("keydown", e => { if(e.key === "Enter") submit(); });
+
+    stream.appendChild(row);
+    scrollEnd();
+    input.focus();
+  }
+
+  /* ── Open / close ── */
+  function openPanel(){
+    panel.classList.add("open");
+    panel.setAttribute("aria-hidden","false");
+    bubble.classList.add("hidden");
+    bubble.setAttribute("aria-expanded","true");
+    if(!booted){ booted = true; boot(); }
+  }
+  function closePanel(){
+    panel.classList.remove("open");
+    panel.setAttribute("aria-hidden","true");
+    bubble.classList.remove("hidden");
+    bubble.setAttribute("aria-expanded","false");
+  }
+
+  bubble.addEventListener("click", openPanel);
+  close.addEventListener("click", closePanel);
+  document.addEventListener("keydown", e => {
+    if(e.key === "Escape" && panel.classList.contains("open") &&
+       !document.getElementById("vvLightbox").classList.contains("is-open")){
+      closePanel();
+    }
   });
 })();
 </script>
